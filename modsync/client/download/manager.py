@@ -1,4 +1,13 @@
-from network.connection_manager import VDS_SERVER_IP
+import os
+import time
+import threading
+from queue import Queue, Empty
+
+from modsync.client.network.connection_utils import VDS_SERVER_IP
+from modsync.client.network.connection_utils import ConnectionManager
+from modsync.client.download.simple_strategy import DownloadStrategy
+
+
 class DownloadManager:
     """Менеджер загрузки файлов с адаптивными стратегиями и автопереподключением"""
     

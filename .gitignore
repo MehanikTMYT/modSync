@@ -1,5 +1,5 @@
 ```
-# Python
+# Python specific
 __pycache__/
 *.pyc
 *.pyo
@@ -9,51 +9,30 @@ env/
 venv/
 .venv/
 .ENV
-.ENV.*
-.venv/
-.python-version
+.venv.bak/
 pip-log.txt
 pip-delete-this-directory.txt
-.tox/
+
+# Testing
 .coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
+coverage/
+htmlcov/
+.noseids
 .pytest_cache/
-.mypy_cache/
 
-# Distribution / packaging
-.Python
+# Build and distribution artifacts
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
 *.egg
+*.egg-info/
+*.so
+.libs/
 
-# Environment variables
-.env
-.env.local
-*.env.*
-
-# IDEs
+# IDE specific
 .vscode/
 .idea/
 *.swp
 *.swo
-*.tmp
 
 # OS generated files
 .DS_Store
@@ -63,4 +42,28 @@ wheels/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*~
+*.bak
+*.save
+
+# Environment variables
+.env
+.env.local
+*.env.*
+
+# Coverage
+.coverage*
+coverage.xml
+
+# Distribution / packaging
+.Python
+*.so
+.libs/
+.pytest_cache/
 ```

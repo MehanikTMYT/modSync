@@ -12,10 +12,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 import tkinter as tk
 from modsync.client.config.manager import ConfigManager
-from modsync.client.network.connection_manager import ConnectionManager
+from modsync.client.network.connection_utils import ConnectionManager
 from modsync.client.network.speed_test_manager import SpeedTestManager
 from modsync.client.download.manager import DownloadManager
-from modsync.client.download.strategy import DownloadStrategy
+from modsync.client.download.simple_strategy import DownloadStrategy
 
 # Константа сервера
 VDS_SERVER_IP = "http://147.45.184.36:8000"  # ЗАМЕНИТЕ НА ВАШ РЕАЛЬНЫЙ IP И ПОРТ

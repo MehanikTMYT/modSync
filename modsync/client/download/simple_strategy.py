@@ -1,43 +1,44 @@
 """
-Download strategies module for ModSync client
+Simplified download strategy module for ModSync client
+All strategy logic consolidated into a single file to reduce complexity
 """
 
 class DownloadStrategy:
-    """Стратегии скачивания файлов"""
+    """Download strategies simplified implementation"""
     
     @staticmethod
     def get_optimal_strategy(connection_quality, file_distribution):
-        """Автоматическое определение оптимальной стратегии на основе скорости и распределения файлов"""
+        """Automatic determination of optimal strategy based on connection and file distribution"""
         strategy = {
             'name': 'adaptive_auto',
-            'description': 'Авто-оптимальная стратегия',
+            'description': 'Auto-optimal strategy',
             'settings': {}
         }
         
-        # Анализ распределения файлов
+        # Analyze file distribution
         tiny_files_pct = file_distribution.get('tiny_files_pct', 0)  # <100KB
         huge_files_pct = file_distribution.get('huge_files_pct', 0)  # >10MB
         
         if connection_quality == 'very_slow':
-            # Очень медленное соединение - минимум потоков, максимум надежности
+            # Very slow connection - minimum threads, maximum reliability
             strategy.update({
                 'name': 'stable_sequential',
-                'description': 'Стабильная последовательная загрузка',
+                'description': 'Stable sequential download',
                 'settings': {
                     'max_workers': 1,
                     'chunk_size': 8192,
-                    'retry_count': 15,  # Больше попыток для очень медленного соединения
+                    'retry_count': 15,  # More attempts for very slow connection
                     'retry_delay': 5,
                     'enable_resume': True,
-                    'timeout': 120  # Большой таймаут
+                    'timeout': 120  # Large timeout
                 }
             })
         
         elif connection_quality == 'slow':
-            # Медленное соединение - осторожная параллельность
+            # Slow connection - careful parallelization
             strategy.update({
                 'name': 'cautious_parallel',
-                'description': 'Осторожная параллельная загрузка',
+                'description': 'Cautious parallel download',
                 'settings': {
                     'max_workers': 2,
                     'tiny_file_workers': 2,
@@ -53,11 +54,11 @@ class DownloadStrategy:
             })
         
         elif connection_quality == 'medium':
-            # Среднее соединение - сбалансированная стратегия
-            if huge_files_pct > 5:  # Если много больших файлов
+            # Medium connection - balanced strategy
+            if huge_files_pct > 5:  # If many large files
                 strategy.update({
                     'name': 'balanced_adaptive',
-                    'description': 'Сбалансированная адаптивная загрузка',
+                    'description': 'Balanced adaptive download',
                     'settings': {
                         'max_workers': 4,
                         'tiny_file_workers': 6,
@@ -73,7 +74,7 @@ class DownloadStrategy:
             else:
                 strategy.update({
                     'name': 'medium_optimized',
-                    'description': 'Оптимизированная для средней скорости',
+                    'description': 'Optimized for medium speed',
                     'settings': {
                         'max_workers': 6,
                         'tiny_file_workers': 8,
@@ -88,11 +89,11 @@ class DownloadStrategy:
                 })
         
         elif connection_quality == 'fast':
-            # Быстрое соединение - максимальная производительность
-            if tiny_files_pct > 70:  # Если преобладают мелкие файлы
+            # Fast connection - maximum performance
+            if tiny_files_pct > 70:  # If predominantly small files
                 strategy.update({
                     'name': 'tiny_files_optimized',
-                    'description': 'Оптимизирована для множества мелких файлов',
+                    'description': 'Optimized for many small files',
                     'settings': {
                         'max_workers': 15,
                         'tiny_file_workers': 20,
@@ -101,14 +102,14 @@ class DownloadStrategy:
                         'huge_file_workers': 2,
                         'chunk_size': 65536,
                         'retry_count': 2,
-                        'enable_progress': False,  # Отключаем прогресс для скорости
+                        'enable_progress': False,  # Disable progress for speed
                         'timeout': 20
                     }
                 })
             else:
                 strategy.update({
                     'name': 'fast_balanced',
-                    'description': 'Баланс скорости и стабильности',
+                    'description': 'Speed and stability balance',
                     'settings': {
                         'max_workers': 10,
                         'tiny_file_workers': 12,
@@ -123,10 +124,10 @@ class DownloadStrategy:
                 })
         
         elif connection_quality == 'very_fast':
-            # Очень быстрое соединение - максимальная производительность
+            # Very fast connection - maximum performance
             strategy.update({
                 'name': 'max_performance',
-                'description': 'Максимальная производительность',
+                'description': 'Maximum performance',
                 'settings': {
                     'max_workers': 25,
                     'tiny_file_workers': 30,
@@ -136,7 +137,7 @@ class DownloadStrategy:
                     'chunk_size': 262144,
                     'retry_count': 1,
                     'enable_progress': False,
-                    'enable_resume': False,  # Не нужно для очень быстрых соединений
+                    'enable_resume': False,  # Not needed for very fast connections
                     'timeout': 15
                 }
             })
@@ -145,11 +146,11 @@ class DownloadStrategy:
     
     @staticmethod
     def get_manual_strategies():
-        """Предопределенные ручные стратегии"""
+        """Predefined manual strategies"""
         return {
             'stable_sequential': {
-                'name': '✅ Стабильная последовательная',
-                'description': 'Максимальная надежность, минимальные ресурсы. Идеально для очень медленного интернета.',
+                'name': '✅ Stable Sequential',
+                'description': 'Maximum reliability, minimum resources. Ideal for very slow internet.',
                 'default': False,
                 'settings': {
                     'max_workers': 1,
@@ -161,8 +162,8 @@ class DownloadStrategy:
                 }
             },
             'balanced_adaptive': {
-                'name': '⚖️ Сбалансированная адаптивная',
-                'description': 'Оптимальный баланс скорости и надежности для большинства пользователей.',
+                'name': '⚖️ Balanced Adaptive',
+                'description': 'Optimal balance of speed and reliability for most users.',
                 'default': True,
                 'settings': {
                     'max_workers': 6,
@@ -177,8 +178,8 @@ class DownloadStrategy:
                 }
             },
             'fast_optimized': {
-                'name': '⚡ Быстрая оптимизированная',
-                'description': 'Максимальная скорость для быстрого интернета. Риск перегрузки при нестабильном соединении.',
+                'name': '⚡ Fast Optimized',
+                'description': 'Maximum speed for fast internet. Risk of overload with unstable connection.',
                 'default': False,
                 'settings': {
                     'max_workers': 15,
@@ -193,8 +194,8 @@ class DownloadStrategy:
                 }
             },
             'gaming_priority': {
-                'name': '🎮 Приоритет для игры',
-                'description': 'Сначала загружает критические файлы для быстрого старта игры, остальное в фоне.',
+                'name': '🎮 Gaming Priority',
+                'description': 'Downloads critical files first for quick game start, others in background.',
                 'default': False,
                 'settings': {
                     'critical_workers': 8,
