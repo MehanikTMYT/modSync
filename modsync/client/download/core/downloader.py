@@ -6,8 +6,8 @@ import os
 import time
 import threading
 from queue import Queue, Empty
-from modsync.client.network.connection.connection_utils import VDS_SERVER_IP
-from modsync.client.network.connection.retry_utils import ConnectionManager
+from modsync.client.network.connection_utils import VDS_SERVER_IP
+from modsync.client.network.connection_utils import ConnectionManager
 
 
 class Downloader:
