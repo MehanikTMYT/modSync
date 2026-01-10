@@ -1,9 +1,6 @@
-import sys
-import os
-
-# Добавляем путь к корню проекта для импортов
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-
+"""
+Download strategies module for ModSync client
+"""
 
 class DownloadStrategy:
     """Стратегии скачивания файлов"""
