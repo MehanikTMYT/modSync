@@ -150,8 +150,8 @@ def handle_range_request(file_path: Path, file_size: int, file_hash: Optional[st
         logger.error(f"❌ Ошибка обработки Range запроса: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error processing range request: {str(e)}")
 
-async def handle_full_file_request(file_path: Path, file_size: int, file_hash: Optional[str], last_modified: str):
-    """Обрабатывает обычные GET запросы для полных файлов с асинхронным чтением"""
+def handle_full_file_request(file_path: Path, file_size: int, file_hash: Optional[str], last_modified: str):
+    """Обрабатывает обычные GET запросы для полных файлов"""
     logger.info(f"📥 Отправка файла: {file_path.name} ({file_size / 1024 / 1024:.2f} MB)")
     headers = {
         "Accept-Ranges": "bytes",
@@ -161,36 +161,21 @@ async def handle_full_file_request(file_path: Path, file_size: int, file_hash: O
     if file_hash:
         headers["X-File-Hash"] = file_hash
     
-    # Асинхронное чтение файла чанками
-    async def file_streamer():
+    def file_iterator():
         chunk_size = 256 * 1024  # 256KB для баланса производительности
         try:
-            # Используем асинхронное чтение через aiofiles если возможно
-            try:
-                import aiofiles
-                async with aiofiles.open(file_path, "rb") as f:
-                    while True:
-                        chunk = await f.read(chunk_size)
-                        if not chunk:
-                            break
-                        yield chunk
-                        await asyncio.sleep(0)  # Отдаем управление event loop
-            except ImportError:
-                # Fallback на синхронное чтение в отдельном потоке
-                loop = asyncio.get_running_loop()
-                with open(file_path, "rb") as f:
-                    while True:
-                        chunk = await loop.run_in_executor(None, f.read, chunk_size)
-                        if not chunk:
-                            break
-                        yield chunk
-                        await asyncio.sleep(0)
+            with open(file_path, "rb") as f:
+                while True:
+                    chunk = f.read(chunk_size)
+                    if not chunk:
+                        break
+                    yield chunk
         except Exception as e:
             logger.error(f"❌ Ошибка чтения файла {file_path}: {str(e)}")
             raise HTTPException(status_code=500, detail="Error reading file")
     
     return StreamingResponse(
-        file_streamer(),
+        file_iterator(),
         headers=headers,
         media_type="application/octet-stream",
         status_code=200

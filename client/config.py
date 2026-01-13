@@ -15,7 +15,7 @@ LOGS_DIR = BASE_DIR / "logs"
 
 DEFAULT_CONFIG = {
     "active_profile": "default",
-    "server_url": "http://147.45.184.36:8800",
+    "server_url": "http://localhost:8800",
     "backups_dir": str(BACKUPS_DIR),
     "logs_dir": str(LOGS_DIR),
     "sync_interval": 60,  # в минутах
