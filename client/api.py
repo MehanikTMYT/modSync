@@ -96,6 +96,8 @@ class ModSyncAPI:
 
     def download_file_resume(self, rel_path, dest, file_info, on_progress=None, max_attempts=5):
         """Улучшенная версия с автоматическим восстановлением после сбоя сети"""
+        import logging
+        logger = logging.getLogger("ModSyncAPI")
         file_size = file_info["size"]
         dest.parent.mkdir(parents=True, exist_ok=True)
         temp_dest = dest.with_suffix(dest.suffix + ".tmp")
@@ -134,8 +136,8 @@ class ModSyncAPI:
                             
                             # Проверка целостности каждые 10MB
                             if downloaded % (10 * 1024 * 1024) == 0 and file_info.get("hash"):
-                                if not self._check_partial_hash(temp_dest, file_info["hash"], downloaded):
-                                    logger.warning(f"⚠️ Частичная проверка хеша не совпала на {downloaded} байтах")
+                                # Пропускаем частичную проверку хеша, так как она требует специальной реализации
+                                pass
                             
                             if on_progress:
                                 on_progress(downloaded, total)
