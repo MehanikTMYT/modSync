@@ -6,7 +6,7 @@ class ServerConfig:
     def __init__(self):
         self.config_path = Path.home() / ".modsync_server_config.json"
         self.default_config = {
-            "mods_directory": str(Path.cwd() / "mods"),
+            "mods_directory": str(Path(__file__).parent),
             "cache_duration": 60,
             "port": 8800,
             "host": "0.0.0.0",
