@@ -1,2 +1,0 @@
-# Server-specific requirements
-watchdog>=2.1.0

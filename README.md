@@ -1,300 +1,160 @@
-# ModSync - Minecraft Mod Synchronization Tool
+# ModSync 2.0 - Умная синхронизация модов для Minecraft
 
-A comprehensive tool for synchronizing Minecraft mods between clients and servers with adaptive download strategies and robust error handling.
+ModSync — это клиент-серверное приложение для автоматической синхронизации модов Minecraft с интеллектуальной системой обновлений, безопасной откаткой изменений и удобным интерфейсом на русском языке.
 
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Client](#client)
-- [Server](#server)
-- [Configuration](#configuration)
-- [Development](#development)
-- [Build Instructions](#build-instructions)
-- [License](#license)
+#🌟 Ключевые возможности
+💡 Интеллектуальная синхронизация
+Diff-sync технология — скачиваются только измененные файлы
+Проверка целостности — каждый файл проверяется по хешу SHA256
+Автоматическое удаление — устаревшие моды удаляются без следа
+Поддержка всех типов файлов — не только .jar, но и конфиги, текстуры, скрипты
+🛡️ Безопасность и надежность
+Автоматические бекапы — перед каждым обновлением создается резервная копия
+Мгновенный откат — верните предыдущее состояние одним кликом при ошибке
+Dry-run режим — протестируйте обновление без риска для ваших модов
+Изоляция бекапов — резервные копии хранятся отдельно от игровых файлов
+🎨 Удобный интерфейс
+Полностью на русском — никакого машинного перевода
+Прогресс-бары — детальная информация о загрузке каждого файла и общем прогрессе
+Системный трей — приложение работает в фоне и всегда под рукой
+Логирование — полная история всех операций с цветовыми индикаторами статуса
+⚡ Оптимизация производительности
+Адаптивная загрузка — автоматический выбор оптимального размера чанков
+Кеширование хешов — повторные синхронизации выполняются мгновенно
+Фоновые операции — интерфейс не блокируется во время загрузки
+Экономия трафика — загружаются только действительно измененные файлы
+🚀 Быстрый старт (для обычных пользователей)
+1. Скачайте готовую версию c релизов
+2. Установка
+Windows: Запустите скачанный .exe файл
+Linux: Сделайте файл исполняемым: chmod +x ModSync_Linux, затем запустите
+3. Первый запуск
+Запустите приложение
+Нажмите 📁 Выбрать папку mods
+Укажите папку mods в вашей установке Minecraft
+Нажмите 🔄 Синхронизировать
+Готово! Все актуальные моды автоматически загрузятся
+💡 Совет: Включите галочку "Dry-run (без изменений)" для первого запуска, чтобы увидеть какие файлы будут изменены.
 
-## Overview
-
-ModSync is a client-server application designed to synchronize Minecraft mods across multiple clients. It provides both a GUI client for end users and a server component for hosting mod files.
-
-## Features
-
-### Client Features
-- **GUI Interface**: Intuitive tkinter-based interface with real-time progress tracking
-- **Adaptive Download Strategies**: Automatically selects optimal download strategy based on connection speed and file distribution
-- **Connection Testing**: Built-in speed and connectivity testing with quality assessment
-- **File Integrity**: MD5 hash verification for downloaded files
-- **Resume Support**: Ability to resume interrupted downloads for large files
-- **Problem File Management**: Visual interface for handling missing or corrupted files
-- **Multi-threaded Downloads**: Parallel downloads with configurable worker counts
-- **Auto-reconnection**: Automatic reconnection on network failures
-
-### Server Features
-- **Simple HTTP Server**: Lightweight server for file distribution
-- **File Monitoring**: Real-time monitoring of mod directory changes
-- **Hash Generation**: Automatic generation of file hash lists
-- **Threading Support**: Concurrent request handling
-
-## Architecture
-
-### Client Architecture
-```
-modsync/
-├── client/
-│   ├── config/           # Configuration management
-│   │   └── manager.py    # Config file handling
-│   ├── download/         # Download management
-│   │   ├── manager.py    # Download orchestrator
-│   │   └── simple_strategy.py # Download strategies
-│   ├── network/          # Network utilities
-│   │   ├── connection_utils.py # Connection management
-│   │   └── speed_test_manager.py # Speed testing
-│   ├── ui/               # User interface
-│   │   └── main_window.py # Main GUI application
-│   └── main.py           # Client entry point
-├── server/               # Server components
-│   ├── server.py         # Main server
-│   ├── handlers.py       # Request handlers
-│   ├── models.py         # Data models
-│   ├── services.py       # Core services
-│   ├── utils.py          # Server utilities
-│   └── __init__.py
-├── shared/               # Shared utilities
-│   └── utils/            # Common helper functions
-└── __init__.py
-```
-
-### Server Architecture
-The server uses a simple HTTP server architecture with file monitoring capabilities to automatically update when mod files change.
-
-## Installation
-
-### Prerequisites
-- Python 3.7 or higher
-- pip package manager
-
-### Client Installation
-```bash
-# Install client requirements
-pip install -r requirements_client.txt
-
-# For GUI client (includes tkinter)
-pip install -r requirements_client.txt
-```
-
-### Server Installation
-```bash
-# Install server requirements
-pip install -r requirements_server.txt
-```
-
-### Complete Installation
-```bash
-# Install all requirements
-pip install -r requirements.txt
-pip install -r requirements_client.txt
-pip install -r requirements_server.txt
-```
-
-## Usage
-
-### Running the Client
-
-#### GUI Client
-```bash
-python -m modsync.client.main
-```
-
-#### Command Line Client (if available)
-```bash
-python -m modsync.client.cli
-```
-
-### Running the Server
+⚙️ Ручная настройка (для разработчиков)
+🖥️ Серверная часть
 
 ```bash
-# Start server on default port 8000
-python -m modsync.server.server
-
-# Start server on custom port
-python -m modsync.server.server --port 8080
-
-# Start server with custom mods directory
-python -m modsync.server.server --mods-dir /path/to/mods
-
-# Start server without file monitoring
-python -m modsync.server.server --no-monitoring
+# Установка зависимостей
+pip install pyinstaller uvicorn fastapi watchdog pydantic
 ```
 
-## Client
+# Запуск сервера
 
-### GUI Interface
-The client provides a comprehensive GUI with the following features:
-
-1. **Connection Status**: Real-time server connectivity status
-2. **Mod Folder Selection**: Easy folder management
-3. **Download Strategy Selection**: Automatic or manual strategy selection
-4. **Synchronization**: One-click mod synchronization
-5. **Problem File Management**: Visual handling of missing/corrupted files
-6. **Progress Tracking**: Detailed download progress with speed metrics
-7. **Settings**: Configuration options for sync behavior
-
-### Download Strategies
-The client implements multiple download strategies:
-
-- **Stable Sequential**: Maximum reliability, single-threaded downloads
-- **Balanced Adaptive**: Optimal balance of speed and reliability
-- **Fast Optimized**: Maximum speed for fast connections
-- **Gaming Priority**: Critical files first for quick game start
-- **Adaptive Auto**: Automatically selects strategy based on connection and file distribution
-
-### Auto Strategy Selection
-The client automatically selects the optimal strategy based on:
-- Connection speed and quality
-- File size distribution
-- Network stability
-
-## Server
-
-### Server Configuration
-- Default port: 8000
-- Default mods directory: ./mods
-- File monitoring enabled by default
-
-### Server Endpoints
-- `/` - Root directory listing
-- `/hashes.json` - File hash information
-- `/[filename]` - Individual file download
-- `/ping` - Connectivity test
-- `/speedtest` - Speed test endpoint
-
-### File Monitoring
-The server monitors the mods directory for changes and automatically updates the hash list when files are added, modified, or removed.
-
-## Configuration
-
-### Client Configuration
-The client uses `modsync_config.ini` for storing settings:
-
-```ini
-[paths]
-minecraft_folder = ./minecraft
-mods_folder = ./minecraft/mods
-backup_folder = ./backups
-
-[connection]
-server_url = http://147.45.184.36:8000
-timeout = 30
-max_retries = 3
-
-[download]
-max_workers = 4
-chunk_size = 32768
-enable_resume = True
-
-[ui]
-theme = dark
-language = ru_RU
-auto_check_updates = True
-```
-
-### Server Configuration
-Server configuration is done via command-line arguments (see usage section).
-
-## Development
-
-### Project Structure
-- `modsync/client/` - Client-side code
-- `modsync/server/` - Server-side code
-- `modsync/shared/` - Shared utilities
-- `modsync/utils/` - General utilities
-
-### Code Style
-- Follow PEP 8 guidelines
-- Use descriptive variable names
-- Include docstrings for all functions and classes
-
-### Testing
-To run basic functionality tests:
 ```bash
-python -c "from modsync.client.ui.main_window import ModSyncApp; print('Import successful')"
-python -c "from modsync.server.server import ModSyncServer; print('Server import successful')"
+python server/main.py --host 0.0.0.0 --port 8800
 ```
 
-## Build Instructions
 
-### Client Build (PyInstaller)
-For Windows (GUI):
+💻 Клиентская часть
+
+
+# Установка зависимостей
+
+```bash
+pip install pyside6 requests
+```
+# Запуск клиента
+
+```bash
+python client/main.py
+```
+
+##🔧 Сборка в один файл
+
+#Для сервера
+
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --windowed --name ModSyncClient modsync/client/main.py
+pyinstaller --onefile --name ModSyncServer --clean --hidden-import watchdog --hidden-import watchdog.observers --hidden-import watchdog.events --hidden-import uvicorn.lifespan.on --hidden-import fastapi --hidden-import starlette --add-data "server.log:." --runtime-hook hooks.py main.py
 ```
 
-For Windows (CLI):
+#Для клиента
+
 ```bash
-pyinstaller --onefile --name ModSyncClientCLI modsync/client/main.py
-```
+pip install pyinstaller
+pyinstaller client/main.py --onefile --windowed --name ModSync --clean --exclude-module PySide6.QtWebEngine --exclude-module PySide6.QtWebEngineWidgets --exclude-module PySide6.QtWebEngineCore --exclude-module PySide6.QtQml --exclude-module PySide6.QtQuick --exclude-module PySide6.Qt3D* --exclude-module PySide6.QtSql --exclude-module PySide6.QtMultimedia --exclude-module PySide6.QtPdf --exclude-module PySide6.QtCharts --hidden-import shiboken6
+  ```
 
-For Linux:
-```bash
-pyinstaller --onefile --name ModSyncClient modsync/client/main.py
-```
+⚠️ Важно: Сборку необходимо выполнять на целевой операционной системе! PyInstaller не может кросс-компилировать бинарники.
 
-### Server Build (PyInstaller)
-For Linux:
-```bash
-pyinstaller --onefile --name ModSyncServer modsync/server/server.py
-```
+#💾 Где хранятся данные?
 
-### Build Requirements
-- PyInstaller
-- All application dependencies
+Конфигурация
+~/.modsync_config.json - Настройки приложения, пути, профили
+Резервные копии
+./.modsync_backups/ - Папка рядом с программой (не в папке модов!)
+Кеш хешов
+mods/.modsync_cache.json - Хеши файлов для быстрой проверки изменений
+Логи
+./modsync.log - Файл логов в директории приложения
 
-## Error Handling
+❓ Часто задаваемые вопросы (FAQ)
+🔐 Безопасно ли это?
+Да! ModSync:
 
-### Client Error Handling
-- Network connection failures with auto-retry
-- File integrity verification
-- Resume interrupted downloads
-- Graceful handling of missing files
+Не передает ваши личные данные
+Не содержит рекламы или майнеров
+Открыт для проверки исходного кода
+Хранит бекапы в изолированной папке
+Проверяет целостность каждого файла
 
-### Server Error Handling
-- Thread-safe request handling
-- File system monitoring errors
-- Network error recovery
+#❌ Что делать если синхронизация сломала игру?
+Откройте ModSync
+Нажмите кнопку ♻ Откатить изменения
+Выберите последний бекап из списка
+Готово! Все моды вернутся в предыдущее состояние
 
-## Troubleshooting
+#📦 Можно ли использовать с другими сборками?
+Да! ModSync работает с:
 
-### Common Issues
-1. **tkinter not found**: Install tkinter with your system package manager
-2. **Connection timeouts**: Check server URL in configuration
-3. **Permission errors**: Ensure proper file permissions for mod directories
+Любыми версиями Minecraft
+Forge, Fabric, Quilt модлоадерами
+Серверными и клиентскими модами
+Любыми дополнениями (текстуры, звуки, скрипты)
 
-### Debugging
-Enable verbose logging by adding debug statements to relevant modules.
+#⚡ Почему так быстро работает?
+ModSync использует:
 
-## License
+Дифференциальную синхронизацию (только изменения)
+Кеширование хешей файлов
+Многопоточную загрузку
+Адаптивный размер чанков в зависимости от скорости интернета
 
-MIT License
+#🌐 Как добавить свой сервер модов?
+Настройте серверную часть на своем хостинге
+В файле конфигурации (~/.modsync_config.json) измените server_url
+Перезапустите приложение
+Теперь клиент будет синхронизироваться с вашим сервером
 
-Copyright (c) 2024 modSync
+#🛠️ Технические требования
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Клиент
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ОС: Windows 10+, Linux (Ubuntu 20.04+)
+Процессор: 1 ГГц или быстрее
+Память: 512 МБ RAM
+Место на диске: 50 МБ для приложения + место для модов
+Интернет: Стабильное соединение для загрузки модов
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Сервер
+
+ОС: Любая с поддержкой Python 3.8+
+Процессор: 2 ГГц для обработки хешей
+Память: 1 ГБ RAM
+Место на диске: Зависит от количества модов
+Сеть: Выделенный IP и открытый порт (по умолчанию 8800)
+
+#📜 Лицензия
+ModSync распространяется под лицензией MIT License.
+Это означает, что вы можете:
+
+✅ Свободно использовать в личных и коммерческих целях
+✅ Модифицировать исходный код
+✅ Распространять модифицированные версии
+✅ Использовать в образовательных целях
